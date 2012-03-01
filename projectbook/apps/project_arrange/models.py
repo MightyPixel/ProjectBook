@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from ordereddict import OrderedDict
 from datetime import date
 
 from django.db import models
