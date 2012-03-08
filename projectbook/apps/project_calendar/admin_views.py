@@ -37,7 +37,6 @@ def index(request):
 index = staff_member_required(index)
 
 
-
 def create_events(request):
     t = get_template('defendcalendar.html')
     
@@ -49,23 +48,26 @@ def create_events(request):
     
     for project in projects_list:
         print project.commission
-        event = models.Event()
-        event.project = project
-        event.save()
-        event.title = project.title
-        event.day_index = Commission.commissions.get_projects_count(project.commission)
-        event.start = datetime.datetime(year = event.project.year ,
-                                        month = project.commission.date.month,
-                                        day = project.commission.date.day,
-                                        hour = models.Event.events.get_projects_for_date(project.commission.date,
-                                            project.commission.specialty) + 7)
-        event.end = datetime.datetime(year = project.year ,
-                                        month = project.commission.date.month,
-                                        day = project.commission.date.day,
-                                        hour = models.Event.events.get_projects_for_date(project.commission.date,
-                                            project.commission.specialty) + 8)
-        event.spec = project.commission.specialty
-        event.save()
+        if project.commission:
+            event = models.Event()
+            event.project = project
+            event.save()
+            event.title = project.title
+            event.day_index = Commission.commissions.get_projects_count(project.commission)
+            event.start = datetime.datetime(year = event.project.year ,
+                                            month = project.commission.date.month,
+                                            day = project.commission.date.day,
+                                            hour = models.Event.events.get_projects_for_date(project.commission.date,
+                                                project.commission.specialty) + 8)
+            event.end = datetime.datetime(year = project.year ,
+                                            month = project.commission.date.month,
+                                            day = project.commission.date.day,
+                                            hour = models.Event.events.get_projects_for_date(project.commission.date,
+                                                project.commission.specialty) + 9)
+            event.spec = project.commission.specialty
+            if project.commission.specialty.room != None:
+                event.room = project.commission.specialty.room
+            event.save()
 
     return HttpResponseRedirect(reverse('projectbook.apps.project_calendar.admin_views.index'))
 

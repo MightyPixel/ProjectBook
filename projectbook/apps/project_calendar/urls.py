@@ -1,8 +1,7 @@
 from django.conf.urls.defaults import *
 
 
-urlpatterns = patterns('projectbook.apps.project_calendar.views',
-#    url(r'^$' , 'index'),
-#    url(r'^create/$' , 'create_events'),
-
+urlpatterns = patterns('',
+    url(r'^admin/calendar/$', 'projectbook.apps.project_calendar.admin_views.index'),
+    url(r'^admin/arrange/$', 'projectbook.apps.project_calendar.admin_views.create_events'),
 )

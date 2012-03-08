@@ -11,9 +11,9 @@
     margin: 0;
     padding: 5px 10px;
     text-indent: -9999px;
-    background: transparent url(../images/django.png) 10px 5px no-repeat;
+    background: transparent url(../images/projectbook.png) 10px 5px no-repeat;
     height: 31px;
-    width: 93px;
+    width: 150px;
 }
 
 div.breadcrumbs {

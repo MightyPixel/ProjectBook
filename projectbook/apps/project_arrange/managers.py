@@ -1,4 +1,12 @@
-from ordereddict import OrderedDict
+try:
+    from ordereddict import OrderedDict
+except ImportError:
+    pass
+try:
+    from collections import OrderedDict
+except ImportError:
+    pass
+
 from datetime import date
 import itertools
 
@@ -7,11 +15,6 @@ from django.db.models import Manager
 from django.db.models import Q
 
 import models
-
-#get_most_bussyday_for_dates
-#get_most_bussy_experts_for_dates
-#get_projects_for_commission
-#get_projects_of_mentor
 
 def common(L):
     objs_counter = dict()
@@ -92,7 +95,7 @@ class ExpertManager(Manager):
             mentors += list(mentors_query.filter(id = expert.id))
             reviewers += list(reviewers_query.filter(id = expert.id))
             experts += list(experts_query.filter(id = expert.id))            
-            
+
         return mentors , reviewers , experts , all_experts
     
     def get_most_bussy_experts_for_date(self , date):
@@ -156,11 +159,9 @@ class ExpertManager(Manager):
 class CommissionManager(Manager):
     def get_projects_count(self , commission):
         return len(models.Project.objects.filter(commission = commission))
-        
-    
 
 class BussyDayManager(Manager):
-    def get_most_bussyday_for_dates(self , dates):
+    def get_busiest_day_for_dates(self , dates):
         day_list = []
         for day in dates:
             day_list.append(day)
@@ -170,7 +171,7 @@ class BussyDayManager(Manager):
         
         return common(day_list)
 
-    def get_most_bussyday_for_dates_for_part(self , dates , part):
+    def get_busiest_day_for_dates_for_part(self , dates , part):
         day_list = []
         for day in dates:
             day_list.append(day)
@@ -183,8 +184,11 @@ class BussyDayManager(Manager):
         
     def get_free_days(self , dates):
         day_list = []
-        bussydays = list(models.BussyDay.objects.filter(date__in = dates))
         for day in dates:
-            for item in bussydays:
+            day_list.append(day)
+            l = list(models.BussyDay.objects.exclude(date = day))
+            for item in l:
                 day_list.append(item.date)
-        return day_list
+               
+        return set(sorted(day_list))
+

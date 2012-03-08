@@ -1,4 +1,12 @@
-from ordereddict import OrderedDict
+try:
+    from ordereddict import OrderedDict
+except ImportError:
+    pass
+try:
+    from collections import OrderedDict
+except ImportError:
+    pass
+
 from datetime import date
 
 from django.db import models
@@ -133,7 +141,7 @@ DAY_PART_CHOICES = (
 
 class Commission(models.Model):
     date = models.DateField()
-    part = models.CharField(max_length = 3 , choices = DAY_PART_CHOICES , blank=True , null=True)
+    part = models.CharField(max_length = 3 , choices = DAY_PART_CHOICES , default = DAY_PART_CHOICES[2])
 
     experts = models.ManyToManyField(Expert)
     

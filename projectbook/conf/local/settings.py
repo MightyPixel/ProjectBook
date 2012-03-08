@@ -47,4 +47,6 @@ INSTALLED_APPS += (
     
     'projectbook.apps.project_arrange',
     'projectbook.apps.project_calendar',
+    'projectbook.apps.project_archive',
+    'projectbook.apps.wall',
 )

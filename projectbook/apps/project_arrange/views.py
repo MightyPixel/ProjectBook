@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect , HttpResponse
@@ -18,8 +20,37 @@ def index(request):
     return HttpResponse(html)
     
 
-def arrange(request , days , rules):
+def arrange(request):
     a = AutoArranger.AutoArranger()
-    a.arrange_by_bussy_days(days)
+
+    day_list = []
+    respect_reviewer = False
+    respect_mentor = False
+
+    try:
+        post = request._get_post()
+        start = post.__getitem__('start_date')
+        end = post.__getitem__('end_date')
+
+        if post.__getitem__('mentor') == "no":
+            respect_mentor = False
+        else:
+            respect_mentor = True
+
+        if post.__getitem__('reviewer') == "no":
+            respect_reviewer = False
+        else:
+            respect_reviewer = True
+    except:
+        pass
+
+    it = datetime.datetime(year = int(start.split('-')[0]) , month = int(start.split('-')[1]) , day = int(start.split('-')[2]))
+    end = datetime.datetime(year = int(end.split('-')[0]) , month = int(end.split('-')[1]) , day = int(end.split('-')[2]))
+    while it <= end:
+        day_list.append(it)
+        it += datetime.timedelta(days=1)
+    
+    a.arrange_by_bussy_days(day_list , respect_mentor , respect_reviewer)
     
     return HttpResponseRedirect(reverse('projectbook.apps.project_calendar.admin_views.index'))
+    

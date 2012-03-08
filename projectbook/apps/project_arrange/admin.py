@@ -42,21 +42,45 @@ class SchoolClassAdmin(admin.ModelAdmin):
     list_display = ( 'grade' , 'speciality' , 'year', )
     list_filter = ( 'grade' , 'speciality' , 'year', )
 
+def make_completed(modeladmin, request, queryset):
+    queryset.update(completed=True)
+make_completed.short_description = "Mark selected stories as completed"
+
+def make_uncompleted(modeladmin, request, queryset):
+    queryset.update(completed=False)
+make_uncompleted.short_description = "Mark selected stories as uncompleted"
+
 class DiplomaWorkAdmin(admin.ModelAdmin):
+    actions = [make_completed , make_uncompleted]
     list_display = ('completed' , 'project')
     list_display_links = ('project',)
     list_editable = ('completed' ,)
 
+def make_scheduled(modeladmin, request, queryset):
+    queryset.update(scheduled=True)
+make_scheduled.short_description = "Mark selected projects as scheduled"
+
+def make_unscheduled(modeladmin, request, queryset):
+    queryset.update(scheduled=False)
+make_unscheduled.short_description = "Mark selected projects as unscheduled"
+
+def unassign_commission(modeladmin, request, queryset):
+    queryset.update(commission=None)
+unassign_commission.short_description = "Unassign selected projects without commission"
+
 class ProjectAdmin(admin.ModelAdmin):
-    search_fields = ('title' , 'mentor' , 'reviewer')
+    actions = [make_scheduled , make_unscheduled , unassign_commission]
+
+    search_fields = ('title' , 'mentor' , 'reviewer',)
     list_display = ('title',
                     'scheduled',
                     'mentor',
                     'reviewer',
                     'commission',
-                    'category_names') 
-    list_filter = ('scheduled' , 'mentor' , 'reviewer' ) 
+                    'category_names')
+    list_filter = ('scheduled' , 'mentor' , 'reviewer')
     filter_horizontal = ('category' ,)
+    list_editable = ('commission' ,)
 
 
 class BussyDayAdmin(admin.ModelAdmin):

@@ -1,7 +1,6 @@
 
 {% extends "admin/base_site.html" %}
 
-{% load i18n %}
 
 {% block content %}
 <style type='text/css'>
@@ -23,7 +22,7 @@
 		top: 13em;
 		margin-left: 600px;
 	}
-	
+
 	#calendar_selection {
 		font-size: 0.7em;
 		position: absolute;
@@ -47,18 +46,26 @@
 		width: 270px;
 		height: 17px;
 	}
-	
-	
 </style>
 
 <link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css' />
 <link rel='stylesheet' type='text/css' href='/static/jquery.weekcalendar.css' />
-
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'></script>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js'></script>
 <script type='text/javascript' src='/static/jquery.weekcalendar.js'></script>
 <script type='text/javascript'>
 
+    (function(){
+        // remove layerX and layerY
+        var all = $.event.props,
+            len = all.length,
+            res = [];
+        while (len--) {
+          var el = all[len];
+          if (el != 'layerX' && el != 'layerY') res.push(el);
+        }
+        $.event.props = res;
+    }());
 
 	var year = new Date().getFullYear();
 	var month = new Date().getMonth();
@@ -71,7 +78,7 @@
 			},
 			events : [
    		        {% for event in nw_events %}
-		           {"id":{{ forloop.counter }}, "start":new Date({{ event.start.year }},{{ event.start.month }},{{ event.start.day }},  {{event.start.hour}}), "end":new Date({{ event.end.year }},{{ event.end.month }},{{ event.end.day }},{{ event.end.hour }}),"title":"{{ event.title }}"},
+		           {"id":{{ forloop.counter }}, "start":new Date({{ event.start.year }},{{ event.start.month }}-1,{{ event.start.day }},  {{event.start.hour}}), "end":new Date({{ event.end.year }},{{ event.end.month }}-1,{{ event.end.day }},{{ event.end.hour }}),"title":"{{ event.title }}"},
 		        {% endfor %}
 			]
 		};
@@ -83,7 +90,7 @@
 			},
 			events : [
    		        {% for event in hw_events %}
-		           {"id":{{ forloop.counter }}, "start":new Date({{ event.start.year }},{{ event.start.month }},{{ event.start.day }},  {{event.start.hour}}), "end":new Date({{ event.end.year }},{{ event.end.month }},{{ event.end.day }},{{ event.end.hour }}),"title":"{{ event.title }}"},
+		           {"id":{{ forloop.counter }}, "start":new Date({{ event.start.year }},{{ event.start.month }}-1,{{ event.start.day }},  {{event.start.hour}}),"end":new Date({{ event.end.year }},{{ event.end.month }}-1,{{ event.end.day }},{{ event.end.hour }}),"title":"{{ event.title }}"},
 		        {% endfor %}
 			]
 		};
@@ -94,14 +101,16 @@
 		    },
 		    events : [
 		        {% for event in sw_events %}
-		           {"id":{{ forloop.counter }}, "start":new Date({{ event.start.year }},{{ event.start.month }},{{ event.start.day }},{{event.start.hour}}), "end":new Date({{ event.end.year }},{{ event.end.month }},{{ event.end.day }},{{ event.end.hour }}),"title":"{{ event.title }}"},
+		           {"id":{{ forloop.counter }}, "start":new Date({{ event.start.year }},{{ event.start.month }}-1,{{ event.start.day }},{{event.start.hour}}), "end":new Date({{ event.end.year }},{{ event.end.month }}-1,{{ event.end.day }},{{ event.end.hour }}),"title":"{{ event.title }}"},
 		        {% endfor %}
 		    ]
 	    };
 	   
 	$(document).ready(function() {
-
 		var $calendar = $('#calendar').weekCalendar({
+            readonly : true,
+			firstDayOfWeek : 1,
+			allowCalEventOverlap : true,
 			timeslotsPerHour: 1,
 			scrollToHourMillis : 0,
 			height: function($calendar){
@@ -116,6 +125,12 @@
 			eventNew : function(calEvent, $event) {
 				alert("You've added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.");
 			},
+			
+			eventClick: function(calEvent, element) {
+			    alert("WAZZAA");
+			},
+			
+			
 			data: function(start, end, callback) {
 
 				var dataSource = $("#data_source").val();
@@ -126,7 +141,6 @@
 				} else if(dataSource === "3") {
 					callback(events_software);
 				} else {
-
 					callback([]);
 				}
             }
@@ -135,18 +149,18 @@
 		$("#data_source").change(function() {
 			$calendar.weekCalendar("refresh");
 			updateMessage();
-			
 		});
+    
 
 		function updateMessage() {
 			var dataSource = $("#data_source").val();
 			$("#message").fadeOut(function(){
 				if(dataSource === "1") {
-					$("#message").text("Displaying event data set 1 with timeslots per hour of 4 and timeslot height of 20px");
+					$("#message").text("Displaying event data set for Network");
 				} else if(dataSource === "2") {
-					$("#message").text("Displaying event data set 2 with timeslots per hour of 3 and timeslot height of 30px");
+					$("#message").text("Displaying event data set for Hardware");
 				} else if(dataSource === "3") {
-					$("#message").text("Displaying event data set 3 with timeslots per hour of 3 and timeslot height of 30px");
+					$("#message").text("Displaying event data set for Software");
 				} else {
 					$("#message").text("Displaying no events.");
 				}
@@ -157,7 +171,6 @@
 	});
 
 </script>
-
 	<div id="message" class="ui-corner-all"></div>
 	<div id="calendar_selection" class="ui-corner-all">
 		<strong>Event Data Source: </strong>
@@ -168,16 +181,16 @@
 			<option value="3">Software</option>
 		</select>
 	</div>
-	
+
 	<h1>Project Calendar</h1>
-	<p><a href="/admin/arrange/">Recreate</a></p>
-	    
+	<p><a href="/calendar/admin/arrange/">Recreate</a></p>
+
     <div>
-        <form action="." method="post">{% csrf_token %}
+        <form action="/projects/arrange/" method="post">{% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Arrange" />
         </form>
     </div>
-	
-	<div id='calendar'></div>
+
+	<div id='calendar' readonly="true"></div>
 {% endblock %}

@@ -29,7 +29,7 @@ class CustomMenu(Menu):
                 _('Administration'),
                 models=('django.contrib.*',)
             ),
-            items.MenuItem('Calendar', '/admin/calendar/'),
+            items.MenuItem('Calendar', '/calendar/admin/calendar/'),
         ]
 
     def init_with_context(self, context):
