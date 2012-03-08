@@ -19,5 +19,8 @@ urlpatterns = patterns('',
             model=Post,
             template_name='results.html'),
         name='post_results'),
-    url(r'^(?P<posts_id>\d+)/vote/$', 'posts.views.vote'),
+    url(r'^(?P<posts_id>\d+)/vote/$', 'vote'),
+    url(r'^calendar/$', 'projectbook.apps.wall.views.calendar' , name="home_calendar"),
+
+    
 )

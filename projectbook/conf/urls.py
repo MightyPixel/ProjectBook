@@ -1,3 +1,4 @@
+
 from django.conf.urls.defaults import patterns, url, include
 
 urlpatterns = patterns('',
@@ -9,3 +10,4 @@ urlpatterns = patterns('',
     url(r'^projects/' , include('projectbook.apps.project_arrange.urls')),
     url(r'^calendar/' , include('projectbook.apps.project_calendar.urls')),
 )
+

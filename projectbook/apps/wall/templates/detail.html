@@ -1,12 +1,30 @@
-<h1>{{ poll.question }}</h1>
+{% extends "index.html" %}
+{% block content %}
+    <h1>{{ post.title }}</h1>
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {% if post %}
+        </br>
+        <h3>
+            {{ post.body }}
+        </h3>
+        </br>
+        <ul>
+        {% for c in post.comment_set.all %}
+            <li>{{ c }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts are available.</p>
+    {% endif %}
 
-<form action="/polls/{{ poll.id }}/vote/" method="post">
-{% csrf_token %}
-{% for choice in poll.choice_set.all %}
-    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
-    <label for="choice{{ forloop.counter }}">{{ choice.choice }}</label><br />
-{% endfor %}
-<input type="submit" value="Vote" />
-</form>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <form action="/{{ post.id }}/vote/" method="post">
+        {% csrf_token %}
+        {% for choice in post.choice_set.all %}
+            </ br>
+            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+            <label for="choice{{ forloop.counter }}">{{ choice.choice }}</label><br />
+        {% endfor %}
+    </form>
+{% endblock %}

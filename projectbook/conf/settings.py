@@ -62,6 +62,7 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, PROJECT_MODULE_NAME, 'media'),
     os.path.join(PROJECT_DIR, PROJECT_MODULE_NAME, 'static'),
     os.path.join(PROJECT_DIR, PROJECT_MODULE_NAME, 'apps' , 'project_arrange' , 'static'),    
+    os.path.join(PROJECT_DIR, PROJECT_MODULE_NAME, 'apps' , 'project_calendar' , 'static'),    
     os.path.join(PROJECT_DIR, PROJECT_MODULE_NAME, 'apps' , 'wall' , 'static'),    
 )
 

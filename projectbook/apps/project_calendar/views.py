@@ -23,7 +23,3 @@ def index(request):
     return HttpResponse(html)
 
 
-
-def refresh_events(request):
-    pass
-    
